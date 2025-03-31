@@ -65,6 +65,9 @@ cpu_exec
     var catStr
     write "cat" to var:catStr
 
+    var diffStr
+    write "diff" to var:diffStr
+
 label kernel_start
     // Display prompt to enter the value:
     copy var:sys_work_dir to DISPLAY_BUFFER
@@ -97,6 +100,14 @@ label kernel_start
     cpu_exec
     copy REG_RES to var:parsedArg1
 
+    var parsedArg2
+    copy KEYBOARD_BUFFER to REG_A
+    write 3 to REG_B
+    write " " to REG_C
+    write OP_GET_COLUMN to REG_OP
+    cpu_exec
+    copy REG_RES to var:parsedArg2
+
     // Display a message with the first component of input:
     write "Parsed command:" to DISPLAY_BUFFER
     write "" to DISPLAY_COLOR
@@ -121,6 +132,12 @@ label kernel_start
     write OP_CMP_EQ to REG_OP
     cpu_exec
     jump_if label:cat_command
+
+    copy var:parsedStr to REG_A
+    copy var:diffStr to REG_B
+    write OP_CMP_EQ to REG_OP
+    cpu_exec
+    jump_if label:diff_command
 
     jump label:kernel_start
 
@@ -179,6 +196,82 @@ label cat_command
         jump label:sys_fs_close
         jump label:kernel_start
 
+label diff_command
+    var diff_command_file_des_1
+    copy var:parsedArg1 to REG_A
+    copy PROGRAM_COUNTER to var:sys_return
+    jump label:sys_fs_open
+    jump_err label:kernel_start
+    copy REG_RES to var:diff_command_file_des_1
+
+    var diff_command_file_des_2
+    copy var:parsedArg2 to REG_A
+    copy PROGRAM_COUNTER to var:sys_return
+    jump label:sys_fs_open
+    jump_err label:kernel_start
+    copy REG_RES to var:diff_command_file_des_2
+
+    var diff_command_counter
+    write 1 to var:diff_command_counter
+    label diff_command_loop
+        copy var:diff_command_file_des_1 to REG_A
+        copy var:diff_command_counter to REG_B
+        copy PROGRAM_COUNTER to var:sys_return
+        jump label:sys_fs_read
+        jump_err label:diff_command_close
+        var line_1
+        copy REG_RES to var:line_1
+
+        copy var:diff_command_file_des_2 to REG_A
+        copy var:diff_command_counter to REG_B
+        copy PROGRAM_COUNTER to var:sys_return
+        jump label:sys_fs_read
+        jump_err label:diff_command_close
+        var line_2
+        copy REG_RES to var:line_2
+
+        copy var:line_1 to REG_A
+        copy var:line_2 to REG_B
+        write OP_CMP_NEQ to REG_OP
+        cpu_exec
+        jump_if label:diff_command_diff_found
+
+        copy REG_RES to DISPLAY_BUFFER
+        write COLOR_GREEN to DISPLAY_COLOR
+        write OP_DISPLAY_LN to REG_OP
+        cpu_exec
+
+        copy var:diff_command_counter to REG_A
+        write OP_INCR to REG_OP
+        cpu_exec
+        copy REG_RES to var:diff_command_counter
+
+        jump label:diff_command_loop
+
+    label diff_command_diff_found
+        write "Diff found at line" to REG_A
+        copy var:diff_command_counter to REG_B
+        write " " to REG_C
+        write OP_CONCAT_WITH to REG_OP
+        cpu_exec
+
+        copy REG_RES to DISPLAY_BUFFER
+        write COLOR_RED to DISPLAY_COLOR
+        write OP_DISPLAY_LN to REG_OP
+        cpu_exec
+
+        jump label:diff_command_close
+
+    label diff_command_close
+        copy var:diff_command_file_des_1 to REG_A
+        copy PROGRAM_COUNTER to var:sys_return
+        jump label:sys_fs_close
+
+        copy var:diff_command_file_des_2 to REG_A
+        copy PROGRAM_COUNTER to var:sys_return
+        jump label:sys_fs_close
+
+        jump label:kernel_start
 
 label kernel_end
     copy REG_ERROR to DISPLAY_BUFFER

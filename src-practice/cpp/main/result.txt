@@ -1,0 +1,55 @@
+serafym@lima-kaguOs:cat /proc/19495/environ
+
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/sbin:/sbinXDG_DATA_DIRS=/usr/local/share:/usr/share:/var/lib/snapd/desktopIDEA_RESTART_VIA_EXIT_CODE=88REMOTE_DEV_LAUNCHER_NAME_FOR_USAGE=remote-dev-server.shTERM=xterm-256colorLANG=C.UTF-8DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/501/busXDG_SESSION_ID=14XDG_SESSION_TYPE=ttyREMOTE_DEV_SERVER_IS_NATIVE_LAUNCHER=1LOGNAME=serafymPWD=/home/serafym.linux/practice7/src-practice/cppXDG_SESSION_CLASS=user_=/home/serafym.linux/.cache/JetBrains/RemoteDev/remote-dev-worker/remote-dev-worker_d133b81ece6946c1ae407a54e2402a98f34df7ffe9fc155896934b6c5d955f13SHELL=/bin/bashSSH_CLIENT=192.168.5.2 58602 22SSH_TTY=/dev/pts/0USER=serafymSSH_AUTH_SOCK=/tmp/saf5450c8e4-81fb-449a-a18a-9e0b3c178df2SSH_CONNECTION=192.168.5.2 58602 192.168.5.15 22LC_CTYPE=en_US.UTF-8XDG_RUNTIME_DIR=/run/user/501SHLVL=0HOME=/home/serafym.linux
+
+
+serafym@lima-kaguOs:~/practice7$ cat /proc/19495/limits
+
+
+Limit                     Soft Limit           Hard Limit           Units
+Max cpu time              unlimited            unlimited            seconds
+Max file size             unlimited            unlimited            bytes
+Max data size             unlimited            unlimited            bytes
+Max stack size            8388608              unlimited            bytes
+Max core file size        0                    unlimited            bytes
+Max resident set          unlimited            unlimited            bytes
+Max processes             15342                15342                processes
+Max open files            1073741816           1073741816           files
+Max locked memory         511254528            511254528            bytes
+Max address space         unlimited            unlimited            bytes
+Max file locks            unlimited            unlimited            locks
+Max pending signals       15342                15342                signals
+Max msgqueue size         819200               819200               bytes
+Max nice priority         0                    0
+Max realtime priority     0                    0
+Max realtime timeout      unlimited            unlimited            us
+
+
+serafym@lima-kaguOs:~/practice7$ cat /proc/19495/stat
+
+
+19495 (main) S 13746 19495 13724 0 -1 4194304 482 0 29 0 1 5 0 0 20 0 1 0 580470 5840896 451 18446744073709551615 216147410026496 216147410032674 281473910588496 0 0 0 4 0 0 1 0 0 17 3 0 0 0 0 0 216147410156776 216147410157592 216148235780096 281473910590429 281473910590481 281473910590481 281473910591428 0
+
+
+serafym@lima-kaguOs:~/practice7$ sudo cat /proc/19495/stack
+
+
+[<0>] hrtimer_nanosleep+0xc0/0x1c8
+[<0>] common_nsleep+0x54/0x90
+[<0>] __arm64_sys_clock_nanosleep+0xf0/0x1a8
+[<0>] invoke_syscall+0x70/0x120
+[<0>] el0_svc_common.constprop.0+0x114/0x140
+[<0>] do_el0_svc+0x28/0x60
+[<0>] el0_svc+0x40/0x1a0
+[<0>] el0t_64_sync_handler+0x148/0x160
+[<0>] el0t_64_sync+0x1b0/0x1b8
+
+
+serafym@lima-kaguOs:~/practice7$ sudo cat /proc/19495/cmdline
+
+
+/home/serafym.linux/practice7/src-practice/cpp/main
+
+
+serafym@lima-kaguOs:~/practice7$
